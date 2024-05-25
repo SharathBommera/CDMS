@@ -6,35 +6,44 @@ import java.io.IOException;
 
 public class HomePage extends JFrame implements ActionListener {
     public HomePage() {
-        setTitle("Home Page");
+        setTitle("CROP DATA MANAGEMENT SYSTEM");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Create a panel for the heading and buttons
-        JPanel panel = new JPanel(null);
+        // Maximize the frame
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Create a panel for the heading and buttons using GridBagLayout
+        JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false); // Make panel transparent
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         JLabel headingLabel = new JLabel("CROP DATA MANAGEMENT SYSTEM");
         headingLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        headingLabel.setBounds(0, 20, 800, 50);
-        panel.add(headingLabel);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 5; // Span across 5 columns
+        panel.add(headingLabel, gbc);
 
         // Set up background image
         ImageIcon backgroundImage = new ImageIcon("F:\\Team-06(1602-22-737-165 & 175)\\project\\images\\cFarm.jpg"); // Replace with your image file path
         JLabel backgroundLabel = new JLabel(backgroundImage);
         backgroundLabel.setLayout(new BorderLayout());
-        
+
         // Add panel to the background label
-        backgroundLabel.add(panel);
+        backgroundLabel.add(panel, BorderLayout.CENTER);
 
         // Set background label as content pane
         setContentPane(backgroundLabel);
 
         // Add buttons
-        JButton[] buttons = new JButton[9];
-        String[] buttonLabels = {"FARMERS", "FARM", "PESTICIDES", "PESTICIDES_FARM", "EQUIPMENT", "EQUIPMENT_FARMERS", "CROP", "PROFIT_LOSS", "CONTACTS"};
+        JButton[] buttons = new JButton[10];
+        String[] buttonLabels = {"FARMERS", "FARM", "PESTICIDES", "PESTICIDES_FARM", "EQUIPMENT", "EQUIPMENT_FARMERS", "CROP", "PROFIT_LOSS", "CONTACTS", "GET FARMER'S DATA"};
         String[] filePaths = {
                 "C:\\MyWebProjects\\FarmersManagement.java",
                 "C:\\MyWebProjects\\FarmManagement.java",
@@ -44,15 +53,23 @@ public class HomePage extends JFrame implements ActionListener {
                 "C:\\MyWebProjects\\Equipment_FarmersManagement.java",
                 "C:\\MyWebProjects\\CropManagement.java",
                 "C:\\MyWebProjects\\Profit_LossManagement.java",
-                "C:\\MyWebProjects\\Farmer_F_ContactManagement.java"
+                "C:\\MyWebProjects\\Farmer_F_ContactManagement.java",
+                "C:\\MyWebProjects\\FarmerDataForm.java"
         };
 
-        for (int i = 0; i < 9; i++) {
+        gbc.gridwidth = 1; // Reset to 1 for buttons
+        gbc.gridy = 1; // Start from second row
+        for (int i = 0; i < 10; i++) {
             buttons[i] = new JButton(buttonLabels[i]);
-            buttons[i].setBounds(50 + (i % 3) * 250, 100 + (i / 3) * 150, 200, 100);
+            buttons[i].setPreferredSize(new Dimension(200, 100)); // Adjusted button size
             buttons[i].setActionCommand(filePaths[i]);
             buttons[i].addActionListener(this);
-            panel.add(buttons[i]);
+
+            gbc.gridx = i % 5;
+            if (i % 5 == 0 && i != 0) {
+                gbc.gridy++;
+            }
+            panel.add(buttons[i], gbc);
         }
 
         setVisible(true);
@@ -68,9 +85,9 @@ public class HomePage extends JFrame implements ActionListener {
         try {
             ProcessBuilder pb = new ProcessBuilder("javac", "-cp", ".;C:\\MyWebProjects\\mysql-connector-j-8.4.0\\mysql-connector-j-8.4.0\\mysql-connector-j-8.4.0.jar", filePath);
             Process process = pb.start();
-            
+
             int exitCode = process.waitFor();
-            
+
             if (exitCode == 0) {
                 String className = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.lastIndexOf("."));
                 pb = new ProcessBuilder("java", "-cp", ".;C:\\MyWebProjects\\mysql-connector-j-8.4.0\\mysql-connector-j-8.4.0\\mysql-connector-j-8.4.0.jar", className);
